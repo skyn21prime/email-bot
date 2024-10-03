@@ -4,12 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from dotenv import load_dotenv
-import sys
-import pause
 import os
 from datetime import datetime
 from colorama import init, Fore, Style
-import requests
 
 #you NEED PYTHON AND INSTALL THIS FRIST BEFORE RUNNING python3 Gmail.py
 
@@ -24,37 +21,31 @@ import requests
 
 load_dotenv()
 init(autoreset=True)
+
 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+#Temp Var
 UserLastName = "Sanchez"
 rank = "Seaman Recurit"
+
 Full_title = rank + " " + UserLastName
 os.system('clear') #Remove this Later this is for Looks in case I need to show it.
 print(f"{Fore.RED}-Saul Sanchez{Fore.MAGENTA} I Love you StackoverFlow and the random people from {Style.BRIGHT}8+ year ago")
-
-def check_password(url, password):
-    try:
-        response = requests.get(url)
-        
-        if response.status_code != 200:
-            print(f"{Fore.RED}Failed to fetch content. Status code: {response.status_code}{Style.RESET_ALL}")
-            return False
-        
-        content = response.text
-        return password in content
-    
-    except requests.exceptions.RequestException as e:
-        print(f"{Fore.RED}An error occurred while checking password: {str(e)}{Style.RESET_ALL}")
-        return False
 
 class EmailBot:
     def __init__(self):
         self.image_path = None
         self.sender_email = "njrotcparlier@gmail.com" 
         self.password = os.getenv("Password")  #U Need 2-Step thing and make it a var in .env
-        self.recipients = ["18001269@parlierusd.org" , "18000644@parlierusd.org"] #change the 18000644@parlierusd.org to User's email or something idk
-        self.subject = "This was sent by a Bot"
-        self.body_text = "hey"
-        self.body_html = "<html><body><h1>Hello is Is " +Full_title+ "'s Receipt on " + current_time + "</h1><p>This is a <strong>test</strong> email.</p></body></html>"
+        self.recipients = [ "18000644@parlierusd.org"] #change the 18000644@parlierusd.org to User's email or something idk
+        self.subject = "This Is Your Ribbon Receipt"
+        self.body_html2 = "<html>This was Sent by A <strong>Bot</strong></html>"
+        self.selected_items = ["Distinguished Cadet", "Aptitude", "Exemplary Conduct", "Exemplary Personal Appearance", "Marksmanship Team", "(C.E.R.T.)"] #Temp
+        self.user_last_name = "Sanchez" #Change Sanchez for the real var
+        self.rank = "Seaman Recruit" #Change Seaman Recruit for the real var
+        self.full_title = f"{self.rank} {self.user_last_name}"
+        self.current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.receipt_html = self.generate_receipt_html()
         self.attachments = [] 
         #I hate this Send me Help, Why Can't we Just Use Gmail on the PreMade Slopp that companies made
 
@@ -63,6 +54,53 @@ class EmailBot:
         self.server.starttls()
         self.server.login(self.sender_email, self.password)
         
+    def generate_receipt_html(self):
+        items_html = "\n".join([f"<tr><td><strong>{item}</strong></td></tr>" for item in self.selected_items])
+        return f"""
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }}
+        
+        .receipt {{
+            text-align: center;
+        }}
+        
+        .receipt-table {{
+            width: 300px;
+            margin: auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            
+        }}
+        
+        .receipt-table th {{
+            background-color: #f0f0f0;
+        }}
+        
+        @media screen and (max-width: 600px) {{
+            .receipt-table {{
+                width: 90%;
+            }}
+        }}
+    </style>
+    <div class="receipt">
+        <h1 style="margin-left: 350px;">Ribbon Receipt</h1>
+        <p style="font-size: 16px;margin-left: 350px;">Date: {self.current_time}</p>
+        <hr style="border-top: 1px solid #ccc; border-bottom: none; margin: 20px 0;">
+        <table class="receipt-table">
+            <thead style="margin-left: 350px;">
+                <h2 style="margin-left: 280px;">Requested By: {self.full_title}</h2>
+            </thead>
+            <tbody>
+                {items_html}
+            </tbody>
+        </table>
+    </div>
+    <hr style="border-top: 1px solid #ccc; border-bottom: none; margin: 20px 0;">
+    """
     def send_email(self):
         try:
             msg = MIMEMultipart()
@@ -70,8 +108,8 @@ class EmailBot:
             msg['To'] = ', '.join(self.recipients)
             msg['Subject'] = self.subject
             
-            msg.attach(MIMEText(self.body_text, 'plain'))
-            msg.attach(MIMEText(self.body_html, 'html'))
+            msg.attach(MIMEText(f"<html><body>{self.receipt_html}</body></html>", 'html'))
+            msg.attach(MIMEText(self.body_html2, 'html'))
 
             if self.image_path:
                 with open(self.image_path, 'rb') as image_file:
@@ -95,22 +133,6 @@ class EmailBot:
 
             self.setup_smtp()
             self.server.send_message(msg)
-            url = "https://raw.githubusercontent.com/Parlier-NJROTC/parlier-njrotc.github.io/f05d0d371a27cdf85665833003cea09d7470f13c/src/pages/Credits/secit/text.astro"
-
-            result = check_password(url, os.getenv("BootPaswod"))
-            print(f"{Fore.GREEN}Checking {Fore.BLUE}BootPaswod{Style.RESET_ALL}")
-            pause.seconds(2)
-            
-            
-            if result:
-                os.system('clear')
-                print(f"{Fore.RED}-Saul Sanchez{Fore.MAGENTA} I Love you StackoverFlow and the random people from {Style.BRIGHT}8+ year ago")
-                print(f"{Fore.BLUE}BootPaswod {Fore.GREEN}matches{Style.RESET_ALL}")
-            else:
-                os.system('clear') 
-                print(f"{Fore.RED}-Saul Sanchez{Fore.MAGENTA} I Love you StackoverFlow and the random people from {Style.BRIGHT}8+ year ago")
-                print(f"{Fore.BLUE}BootPaswod {Fore.RED}does not match{Style.RESET_ALL}")
-                exit()
 
             print(f"{Fore.GREEN}Email sent successfully to {', '.join(self.recipients)}{Style.RESET_ALL}")
             print(f"{Fore.BLUE}Current Time:{Fore.GREEN} {current_time}{Style.RESET_ALL}")
