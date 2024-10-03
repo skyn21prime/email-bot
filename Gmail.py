@@ -30,16 +30,16 @@ rank = "Seaman Recurit"
 
 Full_title = rank + " " + UserLastName
 os.system('clear') #Remove this Later this is for Looks in case I need to show it.
-print(f"{Fore.RED}-Saul Sanchez{Fore.MAGENTA} I Love you StackoverFlow and the random people from {Style.BRIGHT}8+ year ago")
+print(f"{Fore.RED}-Saul Sanchez{Fore.MAGENTA} I Love you StackoverFlow and the random people from {Style.BRIGHT}8+ year ago") #This is A Check to see if my Code is Running. 
 
 class EmailBot:
     def __init__(self):
         self.image_path = None
         self.sender_email = "njrotcparlier@gmail.com" 
         self.password = os.getenv("Password")  #U Need 2-Step thing and make it a var in .env
-        self.recipients = [ "18000644@parlierusd.org"] #change the 18000644@parlierusd.org to User's email or something idk
-        self.subject = "This Is Your Ribbon Receipt"
-        self.body_html2 = "<html>This was Sent by A <strong>Bot</strong></html>"
+        self.recipients = ["18000644@parlierusd.org"] #change the User to User's email or something idk
+        self.subject = "This Is Your Test Ribbon Receipt"
+        self.body_html2 = "<html>This was Sent by A <strong>Bot and this is a Test</strong></html>"
         self.selected_items = ["Distinguished Cadet", "Aptitude", "Exemplary Conduct", "Exemplary Personal Appearance", "Marksmanship Team", "(C.E.R.T.)"] #Temp
         self.user_last_name = "Sanchez" #Change Sanchez for the real var
         self.rank = "Seaman Recruit" #Change Seaman Recruit for the real var
@@ -92,6 +92,7 @@ class EmailBot:
         <hr style="border-top: 1px solid #ccc; border-bottom: none; margin: 20px 0;">
         <table class="receipt-table">
             <thead style="margin-left: 350px;">
+                <h3 style="position:fixed;">Test</h3>
                 <h2 style="margin-left: 280px;">Requested By: {self.full_title}</h2>
             </thead>
             <tbody>
@@ -134,14 +135,18 @@ class EmailBot:
             self.setup_smtp()
             self.server.send_message(msg)
 
+            print(" ") #Spacer
             print(f"{Fore.GREEN}Email sent successfully to {', '.join(self.recipients)}{Style.RESET_ALL}")
             print(f"{Fore.BLUE}Current Time:{Fore.GREEN} {current_time}{Style.RESET_ALL}")
+            print(" ") #Spacer
+            print(f"{Fore.MAGENTA}{self.full_title} {Fore.GREEN}Requested {Fore.BLUE}{self.selected_items}")
         except Exception as e:
             print(f"{Fore.RED}An error occurred: {str(e)}{Style.RESET_ALL}")
+            print(f"{Fore.MAGENTA}{self.full_title} {Fore.RED} Failed to Request {Fore.BLUE}{self.selected_items}")
 
             
 
 if __name__ == "__main__":
     email_bot = EmailBot()
-    email_bot.image_path = "download (5).jpg"  
+    email_bot.image_path = "download (5).jpg" #Change the Image 
     email_bot.send_email()
